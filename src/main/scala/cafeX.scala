@@ -23,6 +23,7 @@ object cafeX extends App {
     !items.exists(items => items.isFood)
   }
 
+  //method to check whether order contains hot food
   def hotFood(items: List[menu]): Boolean ={
     val hotFood = items.filter(item => (item.isFood) && (item.isHot))
 //    println(hotFood)
@@ -31,12 +32,14 @@ object cafeX extends App {
     } else true
   }
 
+  //calculate a 10% service charge with £20 cap
   def ten(items: List[menu]): BigDecimal ={
     val serviceCharge = billCalculator(items: List[menu]) * .1
     if (serviceCharge >= 20) {20}
     else serviceCharge
   }
 
+  //calculate a 20% service charge with £20 cap
   def twenty(items: List[menu]): BigDecimal ={
     val serviceCharge = billCalculator(items: List[menu]) * .2
     if (serviceCharge >= 20) {20}
@@ -44,10 +47,9 @@ object cafeX extends App {
   }
 
 
-//  bill with 20% VAT
+//  bill with VAT
   def VAT(items: List[menu]): BigDecimal = {
     val initialPrice = billCalculator(items: List[menu])
-
 
     if (onlyDrinks(items)){initialPrice}
     else if (!onlyDrinks(items) && !hotFood(items))
