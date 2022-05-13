@@ -1,11 +1,11 @@
 
-
 object cafeX extends App {
 
   //MENU
 
-  case class menu(item: String, cost: BigDecimal, isHot: Boolean, isFood: Boolean, isPremium: Boolean) {
-  }
+  case class Customer(name: String, loyaltyStars: Int)
+
+  case class menu(item: String, cost: BigDecimal, isHot: Boolean, isFood: Boolean, isPremium: Boolean)
 
   //INSTANTIATING ITEMS
   val cola = menu("Cola", .50, isHot = false, isFood = false, isPremium = false)
@@ -13,10 +13,33 @@ object cafeX extends App {
   val cheeseSandwich = menu("Cheese Sandwich", 2.00, isHot = false, isFood = true, isPremium = false)
   val steakSandwich = menu("Steak Sandwich", 4.50, isHot = true, isFood = true, isPremium = false)
   val lobster = menu("Lobster", 25.00, isHot = true, isFood = true, isPremium = true)
+  val bread = menu("Bread", 100.00, isHot = true, isFood = true, isPremium = false)
+
+  //INSTANTIATING CUSTOMERS
+  val connie = Customer("Connie", 4)
+  val sarina = Customer("Sarina", 3)
+  val jake = Customer("Jake", 6)
 
   //basic bill
-  def billCalculator(items: List[menu]) = {
-    items.map(item => item.cost).sum
+  def billCalculator(customer: Customer, items: List[menu]) = {
+    if(premiumFood(items)){
+    items.map(item => item.cost).sum}
+    else {
+      (items.map(item => item.cost).sum) - loyaltyDiscount(customer, items)
+    }
+  }
+
+  def loyaltyDiscount(customer: Customer, items: List[menu]): BigDecimal =
+    customer.loyaltyStars match {
+    case (0) => 1 * (items.map(item => item.cost).sum)
+    case (1) => 1 * (items.map(item => item.cost).sum)
+    case (2) => 1 * (items.map(item => item.cost).sum)
+    case (3) => .025 * (items.map(item => item.cost).sum)
+    case (4) => .05 * (items.map(item => item.cost).sum)
+    case (5) => .075 * (items.map(item => item.cost).sum)
+    case (6) => .1 * (items.map(item => item.cost).sum)
+    case (7) => .125 * (items.map(item => item.cost).sum)
+    case (8) => .15 * (items.map(item => item.cost).sum)
   }
 
   //method to check if the order is only drinks
@@ -42,51 +65,57 @@ object cafeX extends App {
   }
 
   //calculate a 10% service charge with £20 cap
-  def ten(items: List[menu]): BigDecimal ={
-    val serviceCharge = billCalculator(items: List[menu]) * .1
+  def ten(customer: Customer, items: List[menu]): BigDecimal ={
+    val serviceCharge = (items.map(item => item.cost).sum) * 0.1
     if (serviceCharge >= 20) {20}
     else serviceCharge
   }
 
   //calculate a 20% service charge with £20 cap
-  def twenty(items: List[menu]): BigDecimal ={
-    val serviceCharge = billCalculator(items: List[menu]) * .2
+  def twenty(customer: Customer, items: List[menu]): BigDecimal ={
+    val serviceCharge = (items.map(item => item.cost).sum) * .2
     if (serviceCharge >= 20) {20}
     else serviceCharge
   }
 
-  def twentyFive(items: List[menu]): BigDecimal ={
-    val serviceCharge = billCalculator(items: List[menu]) * .25
+  def twentyFive(customer: Customer, items: List[menu]): BigDecimal ={
+    val serviceCharge = (items.map(item => item.cost).sum) * 0.25
     if (serviceCharge >= 40) {40}
     else serviceCharge
   }
 
 
 //  bill with VAT
-  def VAT(items: List[menu]): String = {
-    val initialPrice = billCalculator(items: List[menu])
+  def VAT(customer: Customer, items: List[menu]): String = {
+    val initialPrice = billCalculator(customer, items)
+    val discount = (loyaltyDiscount(customer, items))
 
-    if (onlyDrinks(items)){s"Bill Total: £$initialPrice with service charge £0"}
+
+    if (onlyDrinks(items)){s"Bill Total: £$initialPrice with service charge £0 and £$discount loyalty discount"}
     else if (!onlyDrinks(items) && !hotFood(items) && !premiumFood(items))
-      {s"Bill Total: £$initialPrice with service charge £ ${ten(items)}"}
+      {s"Bill Total: £${initialPrice + ten(customer, items)}. ${initialPrice + discount} with service charge £ ${ten(customer, items)} and £$discount loyalty discount"}
     else if (hotFood(items) && !premiumFood(items)){
-      s"Bill Total: £$initialPrice with service charge £ ${twenty(items)}"
+      s"Bill Total: £${initialPrice + twenty(customer, items)}. ${initialPrice + discount} with service charge £ ${twenty(customer, items)} and £$discount loyalty discount"
     } else if(premiumFood(items)){
-    s"Bill Total: £$initialPrice with service charge £ ${twentyFive(items)}"
+    s"Bill Total: £${initialPrice + twentyFive(customer, items)}. ${initialPrice + discount} with service charge £ ${twentyFive(customer, items)} and £$discount loyalty discount"
     }
     else s"Error calculating total cost"
-
   }
 
+
+  println(VAT(connie, List(bread)))
+  println(VAT(jake, List(steakSandwich, steakSandwich)))
+
 //println("Should be No VAT: 1.5 ")
-println(VAT(List(cola, coffee)))
+//println("sarooons order: \n" + VAT(sarina, List(cola, coffee)))
+//  println("jake's order: \n" + VAT(jake, List(lobster, lobster, steakSandwich, cola)))
 //
 //  println("Should be 10% VAT: 2.75 ")
-println(VAT(List(cola, cheeseSandwich)))
+//println(VAT(List(cola, cheeseSandwich)))
 //
 //  println("Should be 20% VAT: 8.40")
-  println(VAT(List(cola, cheeseSandwich, steakSandwich)))
-  println(VAT(List(cola, coffee, steakSandwich, cheeseSandwich, lobster, lobster, lobster, lobster, lobster, steakSandwich)))
+//  println(VAT(List(cola, cheeseSandwich, steakSandwich)))
+//  println(VAT(List(cola, coffee, steakSandwich, cheeseSandwich, lobster, lobster, lobster, lobster, lobster, steakSandwich)))
 
 
 //  println("is there any hot food?")
