@@ -4,14 +4,15 @@ object cafeX extends App {
 
   //MENU
 
-  case class menu(item: String, cost: BigDecimal, isHot: Boolean, isFood: Boolean) {
+  case class menu(item: String, cost: BigDecimal, isHot: Boolean, isFood: Boolean, isPremium: Boolean) {
   }
 
   //INSTANTIATING ITEMS
-  val cola = menu("Cola", .50, isHot = false, isFood = false)
-  val coffee = menu("Coffee", 1.00, isHot = true, isFood = false)
-  val cheeseSandwich = menu("Cheese Sandwich", 2.00, isHot = false, isFood = true)
-  val steakSandwich = menu("Steak Sandwich", 4.50, isHot = true, isFood = true)
+  val cola = menu("Cola", .50, isHot = false, isFood = false, isPremium = false)
+  val coffee = menu("Coffee", 1.00, isHot = true, isFood = false, isPremium = false)
+  val cheeseSandwich = menu("Cheese Sandwich", 2.00, isHot = false, isFood = true, isPremium = false)
+  val steakSandwich = menu("Steak Sandwich", 4.50, isHot = true, isFood = true, isPremium = false)
+  val lobster = menu("Lobster", 25.00, isHot = true, isFood = true, isPremium = true)
 
   //basic bill
   def billCalculator(items: List[menu]) = {
@@ -32,6 +33,15 @@ object cafeX extends App {
     } else true
   }
 
+  //method to check whether food is premium
+  def premiumFood(items: List[menu]): Boolean ={
+    val premiumFood = items.filter(item => item.isPremium)
+    println("prem:  " + premiumFood)
+    if (premiumFood.isEmpty){
+      false
+    } else true
+  }
+
   //calculate a 10% service charge with £20 cap
   def ten(items: List[menu]): BigDecimal ={
     val serviceCharge = billCalculator(items: List[menu]) * .1
@@ -46,6 +56,12 @@ object cafeX extends App {
     else serviceCharge
   }
 
+  def twentyFive(items: List[menu]): BigDecimal ={
+    val serviceCharge = billCalculator(items: List[menu]) * .25
+    if (serviceCharge >= 40) {40}
+    else serviceCharge
+  }
+
 
 //  bill with VAT
   def VAT(items: List[menu]): BigDecimal = {
@@ -56,7 +72,10 @@ object cafeX extends App {
       {initialPrice + ten(items)}
     else if (hotFood(items)){
       initialPrice + twenty(items)
-    } else initialPrice
+    } else if(premiumFood(items)){
+      initialPrice + twentyFive(items)
+    }
+    else initialPrice
 
   }
 
