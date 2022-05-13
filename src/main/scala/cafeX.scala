@@ -36,7 +36,6 @@ object cafeX extends App {
   //method to check whether food is premium
   def premiumFood(items: List[menu]): Boolean ={
     val premiumFood = items.filter(item => item.isPremium)
-    println("prem:  " + premiumFood)
     if (premiumFood.isEmpty){
       false
     } else true
@@ -64,29 +63,30 @@ object cafeX extends App {
 
 
 //  bill with VAT
-  def VAT(items: List[menu]): BigDecimal = {
+  def VAT(items: List[menu]): String = {
     val initialPrice = billCalculator(items: List[menu])
 
-    if (onlyDrinks(items)){initialPrice}
-    else if (!onlyDrinks(items) && !hotFood(items))
-      {initialPrice + ten(items)}
-    else if (hotFood(items)){
-      initialPrice + twenty(items)
+    if (onlyDrinks(items)){s"Bill Total: £$initialPrice with service charge £0"}
+    else if (!onlyDrinks(items) && !hotFood(items) && !premiumFood(items))
+      {s"Bill Total: £$initialPrice with service charge £ ${ten(items)}"}
+    else if (hotFood(items) && !premiumFood(items)){
+      s"Bill Total: £$initialPrice with service charge £ ${twenty(items)}"
     } else if(premiumFood(items)){
-      initialPrice + twentyFive(items)
+    s"Bill Total: £$initialPrice with service charge £ ${twentyFive(items)}"
     }
-    else initialPrice
+    else s"Error calculating total cost"
 
   }
 
 //println("Should be No VAT: 1.5 ")
-//println(VAT(List(cola, coffee)))
+println(VAT(List(cola, coffee)))
 //
 //  println("Should be 10% VAT: 2.75 ")
-//println(VAT(List(cola, cheeseSandwich)))
+println(VAT(List(cola, cheeseSandwich)))
 //
 //  println("Should be 20% VAT: 8.40")
-//  println(VAT(List(cola, cheeseSandwich, steakSandwich)))
+  println(VAT(List(cola, cheeseSandwich, steakSandwich)))
+  println(VAT(List(cola, coffee, steakSandwich, cheeseSandwich, lobster, lobster, lobster, lobster, lobster, steakSandwich)))
 
 
 //  println("is there any hot food?")
