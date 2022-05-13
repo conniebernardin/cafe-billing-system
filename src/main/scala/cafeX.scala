@@ -11,7 +11,11 @@ object cafeX extends App {
   val cheeseSandwich = menu("Cheese Sandwich", 2.00, isHot = false)
   val steakSandwich = menu("Steak Sandwich", 4.50, isHot = true)
 
-  def billCalculator(items: List[menu]) = items.map(item => item.cost).sum
+  def billCalculator(items: List[menu]) = {
+    val initialCost = items.map(item => item.cost).sum
+    val withVAT = initialCost * 1.2
+    withVAT
+  }
 
 
   println(billCalculator(List(cola, cola, coffee, steakSandwich)))
