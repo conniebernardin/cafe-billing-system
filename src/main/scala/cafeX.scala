@@ -84,7 +84,6 @@ object cafeX extends App {
     else serviceCharge
   }
 
-
 //  bill with VAT
   def VAT(customer: Customer, items: List[menu]): String = {
     val initialPrice = billCalculator(customer, items)
@@ -106,24 +105,6 @@ object cafeX extends App {
   println(VAT(connie, List(bread)))
   println(VAT(jake, List(steakSandwich, steakSandwich)))
 
-//println("Should be No VAT: 1.5 ")
-//println("sarooons order: \n" + VAT(sarina, List(cola, coffee)))
-//  println("jake's order: \n" + VAT(jake, List(lobster, lobster, steakSandwich, cola)))
-//
-//  println("Should be 10% VAT: 2.75 ")
-//println(VAT(List(cola, cheeseSandwich)))
-//
-//  println("Should be 20% VAT: 8.40")
-//  println(VAT(List(cola, cheeseSandwich, steakSandwich)))
-//  println(VAT(List(cola, coffee, steakSandwich, cheeseSandwich, lobster, lobster, lobster, lobster, lobster, steakSandwich)))
 
-
-//  println("is there any hot food?")
-//  println(hotFood(List( cola, cheeseSandwich, coffee)))
-//  println(hotFood(List(coffee, cola, steakSandwich)))
-  /*When all purchased items are drinks no service charge is applied
-When purchased items include any food apply a service charge of 10% to the total bill (rounded to 2 decimal places)
-When purchased items include any hot food apply a service charge of 20% to the total bill with a maximum £20 service charge
-*/
 
 }
