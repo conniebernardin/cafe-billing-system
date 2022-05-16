@@ -2,7 +2,7 @@
 object cafeX extends App {
   //MENU
   //THEME: FRENCH CAFE
-  
+
 
   //INSTANTIATING ITEMS
   val cola = menu("Cola", .50, isHot = false, isFood = false, isPremium = false)
@@ -112,13 +112,26 @@ object cafeX extends App {
   def VAT(customer: Customer, items: List[menu]): String = {
     val initialPrice = billCalculator(customer, items)
     val discount = (loyaltyDiscount(customer, items))
+    println("Thank you for ordering at X Cafe!")
+    println("-----------------------------------------------------")
     println(loyaltyPoints(customer, items))
+    println("-----------------------------------------------------")
+   println("Your Order: \n" + items.map(food => food.item))
+    println("-----------------------------------------------------")
 
-    if (onlyDrinks(items)){s"Bill Total: £$initialPrice with service charge £0 and £$discount loyalty discount"}
+    if (onlyDrinks(items)){s"Bill Total: £$initialPrice " +
+      s"+ service charge £0 " + 
+      s"- £$discount loyalty discount"}
     else if (!onlyDrinks(items) && !hotFood(items) && !premiumFood(items))
-      {s"Bill Total: £${initialPrice + ten(customer, items)}. ${initialPrice + discount} with service charge £ ${ten(customer, items)} and £$discount loyalty discount"}
+      {s"Bill Total: £${initialPrice + ten(customer, items)}. " +
+        s"Order total: ${initialPrice + discount} " +
+        s" + Service charge: £ ${ten(customer, items)}  " +
+        s" - £$discount loyalty discount"}
     else if (hotFood(items) && !premiumFood(items)){
-      s"Bill Total: £${initialPrice + twenty(customer, items)}. ${initialPrice + discount} with service charge £ ${twenty(customer, items)} and £$discount loyalty discount"
+      s"Bill Total: £${initialPrice + twenty(customer, items)}. " +
+        s"Order total: ${initialPrice + discount}  " +
+        s"+ service charge £ ${twenty(customer, items)} " +
+        s"- £$discount loyalty discount"
     } else if(premiumFood(items)){
     s"Bill Total: £${initialPrice + twentyFive(customer, items)}. ${initialPrice + discount} with service charge £ ${twentyFive(customer, items)} and £$discount loyalty discount"
     }
@@ -126,15 +139,15 @@ object cafeX extends App {
   }
 
 
-  println(VAT(connie, List(caviar)))
-  println("-----------------------------------------------------")
+//  println(VAT(connie, List(caviar)))
+//  println("-----------------------------------------------------")
   println(VAT(jake, List(steakFrites, onionSoup)))
   println("-----------------------------------------------------")
-  println(VAT(yonis, List(caviar)))
-  println("-----------------------------------------------------")
-  println(VAT(robyn, List(onionSoup, cola, Ratatouille)))
-  println("-----------------------------------------------------")
-  println(VAT(sarina, List(whiteWine, redWine, cola, beer)))
+//  println(VAT(yonis, List(caviar)))
+//  println("-----------------------------------------------------")
+//  println(VAT(robyn, List(onionSoup, cola, Ratatouille)))
+//  println("-----------------------------------------------------")
+//  println(VAT(sarina, List(whiteWine, redWine, cola, beer)))
 
 
 
