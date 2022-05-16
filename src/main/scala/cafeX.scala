@@ -1,3 +1,4 @@
+import java.awt.event.ItemEvent
 
 object cafeX extends App {
   //MENU
@@ -5,30 +6,30 @@ object cafeX extends App {
 
 
   //INSTANTIATING ITEMS
-  val cola = menu("Cola", .50, isHot = false, isFood = false, isPremium = false)
-  val coffee = menu("Cafe", 1.00, isHot = true, isFood = false, isPremium = false)
-  val redWine = menu("Malbec", 4.00, isHot = false, isFood = false, isPremium = true)
-  val whiteWine = menu("Sauvignon Blanc", 4.00, isHot = false, isFood = false, isPremium = true)
-  val beer = menu("Kronenbourg", 3.00, isHot = false, isFood = false, isPremium = true)
+  val cola = menu("Cola", .50, isHot = false, isFood = false, isPremium = false, isAlcoholic = false)
+  val coffee = menu("Cafe", 1.00, isHot = true, isFood = false, isPremium = false, isAlcoholic = false)
+  val redWine = menu("Malbec", 4.00, isHot = false, isFood = false, isPremium = true, isAlcoholic = true)
+  val whiteWine = menu("Sauvignon Blanc", 4.00, isHot = false, isFood = false, isPremium = true, isAlcoholic = true)
+  val beer = menu("Kronenbourg", 3.00, isHot = false, isFood = false, isPremium = true, isAlcoholic = true)
 
-  val cheeseSandwich = menu("Cheese Sandwich", 2.00, isHot = false, isFood = true, isPremium = false)
-  val steakFrites = menu("Steak frites", 4.50, isHot = true, isFood = true, isPremium = false)
-  val onionSoup = menu("Onion Soup", 7.50, isHot = true, isFood = true, isPremium = false)
-  val Ratatouille = menu("Ratatouille", 14.00, isHot = true, isFood = true, isPremium = false)
-  val Quiche = menu("Quiche Lorraine", 9.00, isHot = false, isFood = true, isPremium = false)
+  val cheeseSandwich = menu("Cheese Sandwich", 2.00, isHot = false, isFood = true, isPremium = false, isAlcoholic = false)
+  val steakFrites = menu("Steak frites", 4.50, isHot = true, isFood = true, isPremium = false, isAlcoholic = false)
+  val onionSoup = menu("Onion Soup", 7.50, isHot = true, isFood = true, isPremium = false, isAlcoholic = false)
+  val ratatouille = menu("Ratatouille", 14.00, isHot = true, isFood = true, isPremium = false, isAlcoholic = false)
+  val quiche = menu("Quiche Lorraine", 9.00, isHot = false, isFood = true, isPremium = false, isAlcoholic = false)
 
-  val coqAuVin = menu("Coq au vin", 18.50, isHot = true, isFood = true, isPremium = true)
-  val lobster = menu("Lobster", 25.00, isHot = true, isFood = true, isPremium = true)
-  val caviar = menu("Caviar", 30.00, isHot = false, isFood = true, isPremium = true)
+  val coqAuVin = menu("Coq au vin", 18.50, isHot = true, isFood = true, isPremium = true, isAlcoholic = false)
+  val lobster = menu("Lobster", 25.00, isHot = true, isFood = true, isPremium = true, isAlcoholic = false)
+  val caviar = menu("Caviar", 30.00, isHot = false, isFood = true, isPremium = true, isAlcoholic = false)
 
 
   //INSTANTIATING CUSTOMERS
-  val connie = Customer("Connie", 4)
-  val cristian = Customer("Cristian", 2)
-  val sarina = Customer("Sarina", 3)
-  val jake = Customer("Jake", 6)
-  val robyn = Customer("Robyn", 6)
-  val yonis = Customer("Yonis", 8)
+  val connie = Customer("Connie", 4, 22)
+  val cristian = Customer("Cristian", 2, 15)
+  val sarina = Customer("Sarina", 3, 23)
+  val jake = Customer("Jake", 6, 12)
+  val robyn = Customer("Robyn", 6, 24)
+  val yonis = Customer("Yonis", 8, 18)
 
 
   //loyalty card points increase if spent over £20
@@ -108,6 +109,9 @@ object cafeX extends App {
     else serviceCharge
   }
 
+  //Happy Hour
+//  def happyHour(customer: Customer, items: List[menu]):
+
 //  bill with VAT
   def VAT(customer: Customer, items: List[menu]): String = {
     val initialPrice = billCalculator(customer, items)
@@ -120,7 +124,7 @@ object cafeX extends App {
     println("-----------------------------------------------------")
 
     if (onlyDrinks(items)){s"Bill Total: £$initialPrice " +
-      s"+ service charge £0 " + 
+      s"+ service charge £0 " +
       s"- £$discount loyalty discount"}
     else if (!onlyDrinks(items) && !hotFood(items) && !premiumFood(items))
       {s"Bill Total: £${initialPrice + ten(customer, items)}. " +
@@ -141,14 +145,22 @@ object cafeX extends App {
 
 //  println(VAT(connie, List(caviar)))
 //  println("-----------------------------------------------------")
-  println(VAT(jake, List(steakFrites, onionSoup)))
+  println("first order")
+  println(VAT(jake, List(steakFrites, onionSoup, ratatouille)))
   println("-----------------------------------------------------")
 //  println(VAT(yonis, List(caviar)))
 //  println("-----------------------------------------------------")
 //  println(VAT(robyn, List(onionSoup, cola, Ratatouille)))
 //  println("-----------------------------------------------------")
 //  println(VAT(sarina, List(whiteWine, redWine, cola, beer)))
-
+//  println("second order")
+//  println(VAT(jake, List(steakFrites, onionSoup, Ratatouille)))
+//  println("-----------------------------------------------------")
+//
+//  println("third order")
+//  println(VAT(jake, List(steakFrites, onionSoup, Ratatouille)))
+//  println("-----------------------------------------------------")
+//
 
 
 }

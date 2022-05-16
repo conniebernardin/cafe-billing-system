@@ -1,2 +1,2 @@
-case class Customer (name: String, var loyaltyStars: Int)
+case class Customer (name: String, var loyaltyStars: Int, age: Int)
 
