@@ -2,6 +2,7 @@
 object cafeX extends App {
 
   //MENU
+  //THEME: FRENCH CAFE
 
   case class Customer(name: String, var loyaltyStars: Int)
 
@@ -9,23 +10,37 @@ object cafeX extends App {
 
   //INSTANTIATING ITEMS
   val cola = menu("Cola", .50, isHot = false, isFood = false, isPremium = false)
-  val coffee = menu("Coffee", 1.00, isHot = true, isFood = false, isPremium = false)
+  val coffee = menu("Cafe", 1.00, isHot = true, isFood = false, isPremium = false)
+  val redWine = menu("Malbec", 4.00, isHot = false, isFood = false, isPremium = true)
+  val whiteWine = menu("Sauvignon Blanc", 4.00, isHot = false, isFood = false, isPremium = true)
+  val beer = menu("Kronenbourg", 3.00, isHot = false, isFood = false, isPremium = true)
+
   val cheeseSandwich = menu("Cheese Sandwich", 2.00, isHot = false, isFood = true, isPremium = false)
-  val steakSandwich = menu("Steak Sandwich", 4.50, isHot = true, isFood = true, isPremium = false)
+  val steakFrites = menu("Steak frites", 4.50, isHot = true, isFood = true, isPremium = false)
+  val onionSoup = menu("Onion Soup", 7.50, isHot = true, isFood = true, isPremium = false)
+  val Ratatouille = menu("Ratatouille", 14.00, isHot = true, isFood = true, isPremium = false)
+  val Quiche = menu("Quiche Lorraine", 9.00, isHot = false, isFood = true, isPremium = false)
+
+  val coqAuVin = menu("Coq au vin", 18.50, isHot = true, isFood = true, isPremium = true)
   val lobster = menu("Lobster", 25.00, isHot = true, isFood = true, isPremium = true)
-  val caviar = menu("Caviar", 100.00, isHot = true, isFood = true, isPremium = false)
+  val caviar = menu("Caviar", 30.00, isHot = false, isFood = true, isPremium = true)
 
   //INSTANTIATING CUSTOMERS
   val connie = Customer("Connie", 4)
+  val cristian = Customer("Cristian", 2)
   val sarina = Customer("Sarina", 3)
   val jake = Customer("Jake", 6)
+  val robyn = Customer("Robyn", 6)
+  val yonis = Customer("Yonis", 8)
 
   //loyalty card tally
   def loyaltyPoints(customer: Customer, items: List[menu]): String = {
-    if (billCalculator(customer, items) >= 20){
+    if (billCalculator(customer, items) >= 20 && customer.loyaltyStars < 8){
       customer.loyaltyStars += 1
       s"Loyalty point added! Current total: ${customer.loyaltyStars}"
-    } else "Spend at least £20 next time to get a loyalty point"
+    } else if (billCalculator(customer, items) >= 20 && customer.loyaltyStars >= 8){
+      "Maximum loyalty points reached! Congratulations you receive a 20% discount on all non-premium orders. "}
+    else "Spend at least £20 next time to get a loyalty point"
   }
 
 
@@ -112,8 +127,14 @@ object cafeX extends App {
 
 
   println(VAT(connie, List(caviar)))
-  println(VAT(jake, List(steakSandwich, steakSandwich)))
-  println(VAT(jake, List(caviar)))
+  println("-----------------------------------------------------")
+  println(VAT(jake, List(steakFrites, onionSoup)))
+  println("-----------------------------------------------------")
+  println(VAT(yonis, List(caviar)))
+  println("-----------------------------------------------------")
+  println(VAT(robyn, List(onionSoup, cola, Ratatouille)))
+  println("-----------------------------------------------------")
+  println(VAT(sarina, List(whiteWine, redWine, cola, beer)))
 
 
 
