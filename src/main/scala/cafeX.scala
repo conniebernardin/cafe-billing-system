@@ -1,12 +1,8 @@
 
 object cafeX extends App {
-
   //MENU
   //THEME: FRENCH CAFE
-
-  case class Customer(name: String, var loyaltyStars: Int)
-
-  case class menu(item: String, cost: BigDecimal, isHot: Boolean, isFood: Boolean, isPremium: Boolean)
+  
 
   //INSTANTIATING ITEMS
   val cola = menu("Cola", .50, isHot = false, isFood = false, isPremium = false)
@@ -25,6 +21,7 @@ object cafeX extends App {
   val lobster = menu("Lobster", 25.00, isHot = true, isFood = true, isPremium = true)
   val caviar = menu("Caviar", 30.00, isHot = false, isFood = true, isPremium = true)
 
+
   //INSTANTIATING CUSTOMERS
   val connie = Customer("Connie", 4)
   val cristian = Customer("Cristian", 2)
@@ -33,7 +30,8 @@ object cafeX extends App {
   val robyn = Customer("Robyn", 6)
   val yonis = Customer("Yonis", 8)
 
-  //loyalty card tally
+
+  //loyalty card points increase if spent over £20
   def loyaltyPoints(customer: Customer, items: List[menu]): String = {
     if (billCalculator(customer, items) >= 20 && customer.loyaltyStars < 8){
       customer.loyaltyStars += 1
@@ -53,6 +51,7 @@ object cafeX extends App {
     }
   }
 
+  //calculating discount based on loyalty stars
   def loyaltyDiscount(customer: Customer, items: List[menu]): BigDecimal =
     customer.loyaltyStars match {
     case (0) => 1 * (items.map(item => item.cost).sum)
@@ -102,6 +101,7 @@ object cafeX extends App {
     else serviceCharge
   }
 
+  //calculate a 25% service charge with £40 cap for premium food
   def twentyFive(customer: Customer, items: List[menu]): BigDecimal ={
     val serviceCharge = (items.map(item => item.cost).sum) * 0.25
     if (serviceCharge >= 40) {40}
