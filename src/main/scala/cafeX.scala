@@ -3,7 +3,7 @@ object cafeX extends App {
 
   //MENU
 
-  case class Customer(name: String, loyaltyStars: Int)
+  case class Customer(name: String, var loyaltyStars: Int)
 
   case class menu(item: String, cost: BigDecimal, isHot: Boolean, isFood: Boolean, isPremium: Boolean)
 
@@ -13,12 +13,21 @@ object cafeX extends App {
   val cheeseSandwich = menu("Cheese Sandwich", 2.00, isHot = false, isFood = true, isPremium = false)
   val steakSandwich = menu("Steak Sandwich", 4.50, isHot = true, isFood = true, isPremium = false)
   val lobster = menu("Lobster", 25.00, isHot = true, isFood = true, isPremium = true)
-  val bread = menu("Bread", 100.00, isHot = true, isFood = true, isPremium = false)
+  val caviar = menu("Caviar", 100.00, isHot = true, isFood = true, isPremium = false)
 
   //INSTANTIATING CUSTOMERS
   val connie = Customer("Connie", 4)
   val sarina = Customer("Sarina", 3)
   val jake = Customer("Jake", 6)
+
+  //loyalty card tally
+  def loyaltyPoints(customer: Customer, items: List[menu]): String = {
+    if (billCalculator(customer, items) >= 20){
+      customer.loyaltyStars += 1
+      s"Loyalty point added! Current total: ${customer.loyaltyStars}"
+    } else "Spend at least £20 next time to get a loyalty point"
+  }
+
 
   //basic bill
   def billCalculator(customer: Customer, items: List[menu]) = {
@@ -88,7 +97,7 @@ object cafeX extends App {
   def VAT(customer: Customer, items: List[menu]): String = {
     val initialPrice = billCalculator(customer, items)
     val discount = (loyaltyDiscount(customer, items))
-
+    println(loyaltyPoints(customer, items))
 
     if (onlyDrinks(items)){s"Bill Total: £$initialPrice with service charge £0 and £$discount loyalty discount"}
     else if (!onlyDrinks(items) && !hotFood(items) && !premiumFood(items))
@@ -102,8 +111,9 @@ object cafeX extends App {
   }
 
 
-  println(VAT(connie, List(bread)))
+  println(VAT(connie, List(caviar)))
   println(VAT(jake, List(steakSandwich, steakSandwich)))
+  println(VAT(jake, List(caviar)))
 
 
 
