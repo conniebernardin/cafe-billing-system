@@ -1,3 +1,4 @@
+import CafeX.IncreaseLoyaltyPoints
 
 object CafeX extends App {
   //THEME: FRENCH CAFE
@@ -22,7 +23,7 @@ object CafeX extends App {
   val connie = Customer("Connie", 4)
   val cristian = Customer("Cristian", 2)
   val sarina = Customer("Sarina", 3)
-  val jake = Customer("Jake", 6)
+  val jake = Customer("Jake", 7)
   val robyn = Customer("Robyn", 6)
   val yonis = Customer("Yonis", 8)
 
@@ -88,26 +89,29 @@ object CafeX extends App {
     } else serviceChargeCalculator(items)
   }
 
-//  bill with VAT TODO: "billWithVAT" looks like a much better name than VAT...
-  def VAT(customer: Customer, items: List[MenuItem]): String = { //TODO: We don't capitalize defs, e.g. def vat(...)...
-    val initialPrice = billWithLoyaltyDiscount(customer, items) //TODO: isn't bill calculator already taking off the loyalty discount?
+  def billTotalWithServiceAndLoyalty(customer: Customer, items: List[MenuItem]): BigDecimal = {
+    val billWithLoyalty = billWithLoyaltyDiscount(customer, items)
     val serviceCharge = serviceChargeCalculator(items)
-    println("Thank you for ordering at X Cafe!")
-    println("-----------------------------------------------------")
-    println(IncreaseLoyaltyPoints(customer, items))
-    println("-----------------------------------------------------")
-   println("Your Order: \n" + items.map(food => food.item))
-    println("-----------------------------------------------------")
+    val total = billWithLoyalty - serviceCharge
+    total
+  }
 
-    s"Total: ${initialPrice - serviceCharge}" +
-      s"Order total: ${sumMenuItems(items)}" +
+  def billReceipt(customer: Customer, items: List[MenuItem]): String ={
+    "Thank you for ordering at X Cafe! \n" +
+    "----------------------------------------------------- \n" +
+      IncreaseLoyaltyPoints(customer, items) + " \nYour Order: \n" + items.map(food => food.item)  + "\n" +
+    "-----------------------------------------------------" + "\n" + s"Total: ${billTotalWithServiceAndLoyalty(customer, items)}" +
+      "\n" +
+      s"Order before discount: ${sumMenuItems(items)}" +
+      "\n" +
       s"Loyalty Discount: ${loyaltyDiscount(customer, items)}" +
-      s"Service Charge: ${serviceCharge}"
+      "\n" +
+      s"Service Charge: ${serviceChargeCap(items)}"
   }
 
 
 
-  println(VAT(jake, List(steakFrites, onionSoup)))
+  println(billReceipt(jake, List(steakFrites, onionSoup, Ratatouille, Ratatouille, Ratatouille)))
   println("-----------------------------------------------------")
 
 }
