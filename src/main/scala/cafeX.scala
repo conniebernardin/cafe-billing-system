@@ -1,4 +1,5 @@
-import java.awt.event.ItemEvent
+import java.time
+import java.time.LocalTime
 
 object cafeX extends App {
   //MENU
@@ -32,17 +33,6 @@ object cafeX extends App {
   val yonis = Customer("Yonis", 8, 18)
 
 
-  //loyalty card points increase if spent over £20
-  def loyaltyPoints(customer: Customer, items: List[menu]): String = {
-    if (billCalculator(customer, items) >= 20 && customer.loyaltyStars < 8){
-      customer.loyaltyStars += 1
-      s"Loyalty point added! Current total: ${customer.loyaltyStars}"
-    } else if (billCalculator(customer, items) >= 20 && customer.loyaltyStars >= 8){
-      "Maximum loyalty points reached! Congratulations you receive a 20% discount on all non-premium orders. "}
-    else "Spend at least £20 next time to get a loyalty point"
-  }
-
-
   //basic bill
   def billCalculator(customer: Customer, items: List[menu]) = {
     if(premiumFood(items)){
@@ -64,6 +54,16 @@ object cafeX extends App {
     case (6) => .1 * (items.map(item => item.cost).sum)
     case (7) => .125 * (items.map(item => item.cost).sum)
     case (8) => .15 * (items.map(item => item.cost).sum)
+  }
+
+  //loyalty card points increase if spent over £20
+  def loyaltyPoints(customer: Customer, items: List[menu]): String = {
+        if (billCalculator(customer, items) >= 20 && customer.loyaltyStars < 8){
+      customer.loyaltyStars += 1
+      s"Loyalty point added! Current total: ${customer.loyaltyStars}"
+    } else if (billCalculator(customer, items) >= 20 && customer.loyaltyStars >= 8){
+      "Maximum loyalty points reached! Congratulations you receive a 20% discount on all non-premium orders. "}
+    else "Spend at least £20 next time to get a loyalty point"
   }
 
   //method to check if the order is only drinks
@@ -110,12 +110,19 @@ object cafeX extends App {
   }
 
   //Happy Hour
-//  def happyHour(customer: Customer, items: List[menu]):
+//  def happyHour(items: List[menu]): BigDecimal = {
+//    val time = LocalTime.now.getHour
+//    if (time > 15 && time < 22){
+//      items.filter(items => items.isAlcoholic).map(drinks => drinks.cost).sum /2
+//    } else 0
+//  }
 
 //  bill with VAT
   def VAT(customer: Customer, items: List[menu]): String = {
+//    happyHour(items)
     val initialPrice = billCalculator(customer, items)
     val discount = (loyaltyDiscount(customer, items))
+
     println("Thank you for ordering at X Cafe!")
     println("-----------------------------------------------------")
     println(loyaltyPoints(customer, items))
@@ -145,14 +152,14 @@ object cafeX extends App {
 
 //  println(VAT(connie, List(caviar)))
 //  println("-----------------------------------------------------")
-  println("first order")
-  println(VAT(jake, List(steakFrites, onionSoup, ratatouille)))
-  println("-----------------------------------------------------")
+//  println("first order")
+//  println(VAT(jake, List(steakFrites, onionSoup, ratatouille)))
+//  println("-----------------------------------------------------")
 //  println(VAT(yonis, List(caviar)))
 //  println("-----------------------------------------------------")
 //  println(VAT(robyn, List(onionSoup, cola, Ratatouille)))
 //  println("-----------------------------------------------------")
-//  println(VAT(sarina, List(whiteWine, redWine, cola, beer)))
+  println(VAT(sarina, List(whiteWine, redWine, cola, beer)))
 //  println("second order")
 //  println(VAT(jake, List(steakFrites, onionSoup, Ratatouille)))
 //  println("-----------------------------------------------------")
