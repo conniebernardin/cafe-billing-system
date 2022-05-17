@@ -3,7 +3,7 @@ object cafeX extends App {
   //MENU
   //THEME: FRENCH CAFE
 
-
+  //TODO: Some of these should be vals, some Objects and some Classes... possibly even a trait lying about somewhere?
   //INSTANTIATING ITEMS
   val cola = menu("Cola", .50, isHot = false, isFood = false, isPremium = false)
   val coffee = menu("Cafe", 1.00, isHot = true, isFood = false, isPremium = false)
@@ -31,10 +31,10 @@ object cafeX extends App {
   val yonis = Customer("Yonis", 8)
 
 
-  //loyalty card points increase if spent over £20
-  def loyaltyPoints(customer: Customer, items: List[menu]): String = {
+  //loyalty card points increase if spent over £20 //TODO: We never comment for defs, the name of the method should explain exactly what it does so these aren't needed
+  def loyaltyPoints(customer: Customer, items: List[menu]): String = { //TODO: You've worked out the loyalty points and returned a messages, testing this could prove difficult. Next time return the points and construct the message elsewhere
     if (billCalculator(customer, items) >= 20 && customer.loyaltyStars < 8){
-      customer.loyaltyStars += 1
+      customer.loyaltyStars += 1 //TODO: This type of mutability strays away from what scala offers, try to do this with immutability
       s"Loyalty point added! Current total: ${customer.loyaltyStars}"
     } else if (billCalculator(customer, items) >= 20 && customer.loyaltyStars >= 8){
       "Maximum loyalty points reached! Congratulations you receive a 20% discount on all non-premium orders. "}
@@ -44,7 +44,7 @@ object cafeX extends App {
 
   //basic bill
   def billCalculator(customer: Customer, items: List[menu]) = {
-    if(premiumFood(items)){
+    if(premiumFood(items)){ //TODO: premiumFood isn't very descriptive, I know this is picky but "isPremiumFood" `sounds` nicer
     items.map(item => item.cost).sum}
     else {
       (items.map(item => item.cost).sum) - loyaltyDiscount(customer, items)
@@ -52,9 +52,9 @@ object cafeX extends App {
   }
 
   //calculating discount based on loyalty stars
-  def loyaltyDiscount(customer: Customer, items: List[menu]): BigDecimal =
-    customer.loyaltyStars match {
-    case (0) => 1 * (items.map(item => item.cost).sum)
+  def loyaltyDiscount(customer: Customer, items: List[menu]): BigDecimal = //TODO: Great naming! Since this is returning a loyaltyDiscount
+    customer.loyaltyStars match { //TODO: Good use of pattern matching over if statements
+    case (0) => 1 * (items.map(item => item.cost).sum) //TODO: These all look ver similar, could we move them to a common function for readability?
     case (1) => 1 * (items.map(item => item.cost).sum)
     case (2) => 1 * (items.map(item => item.cost).sum)
     case (3) => .025 * (items.map(item => item.cost).sum)
@@ -67,28 +67,29 @@ object cafeX extends App {
 
   //method to check if the order is only drinks
   def onlyDrinks(items: List[menu]) ={
-    !items.exists(items => items.isFood)
+    !items.exists(items => items.isFood) //TODO: Really good use of scala's built in functions, you should use exists below!
   }
 
   //method to check whether order contains hot food
-  def hotFood(items: List[menu]): Boolean ={
+  def hotFood(items: List[menu]): Boolean ={ //TODO: There already "exists" a function that does this method in scala...
     val hotFood = items.filter(item => (item.isFood) && (item.isHot))
 //    println(hotFood)
-    if (hotFood.isEmpty){
+    if (hotFood.isEmpty){//TODO: This could simply be hotFood.isEmpty, as it returns a Boolean type
       false
     } else true
   }
 
   //method to check whether food is premium
-  def premiumFood(items: List[menu]): Boolean ={
+  def premiumFood(items: List[menu]): Boolean ={ //TODO: There already "exists" a function that does this method in scala...
     val premiumFood = items.filter(item => item.isPremium)
-    if (premiumFood.isEmpty){
+    if (premiumFood.isEmpty){ //TODO: This could simply be premiumFood.isEmpty, as it returns a Boolean type
       false
     } else true
   }
 
+  //TODO: ten(), twenty(), and twentyFive() look awfully similar, is there a way you can see to coombine them into one function?
   //calculate a 10% service charge with £20 cap
-  def ten(customer: Customer, items: List[menu]): BigDecimal ={
+  def ten(customer: Customer, items: List[menu]): BigDecimal ={ //TODO: Any reason customer is passed in here as a parameter
     val serviceCharge = (items.map(item => item.cost).sum) * 0.1
     if (serviceCharge >= 20) {20}
     else serviceCharge
@@ -108,9 +109,9 @@ object cafeX extends App {
     else serviceCharge
   }
 
-//  bill with VAT
-  def VAT(customer: Customer, items: List[menu]): String = {
-    val initialPrice = billCalculator(customer, items)
+//  bill with VAT TODO: "billWithVAT" looks like a much better name than VAT...
+  def VAT(customer: Customer, items: List[menu]): String = { //TODO: We don't capitalize defs, e.g. def vat(...)...
+    val initialPrice = billCalculator(customer, items) //TODO: isn't bill calculator already taking off the loyalty discount?
     val discount = (loyaltyDiscount(customer, items))
     println("Thank you for ordering at X Cafe!")
     println("-----------------------------------------------------")
@@ -136,7 +137,7 @@ object cafeX extends App {
     s"Bill Total: £${initialPrice + twentyFive(customer, items)}. ${initialPrice + discount} with service charge £ ${twentyFive(customer, items)} and £$discount loyalty discount"
     }
     else s"Error calculating total cost"
-  }
+  } //TODO: Constructing and returning these Strings are great but you've made it hard to test
 
 
 //  println(VAT(connie, List(caviar)))
