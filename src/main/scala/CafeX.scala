@@ -1,5 +1,7 @@
 import CafeX.IncreaseLoyaltyPoints
 
+import java.time.LocalTime
+
 object CafeX extends App {
   //THEME: FRENCH CAFE
 
@@ -23,95 +25,158 @@ object CafeX extends App {
   val connie = Customer("Connie", 4)
   val cristian = Customer("Cristian", 2)
   val sarina = Customer("Sarina", 3)
-  val jake = Customer("Jake", 7)
+  val jake = Customer("Jake", 8)
   val robyn = Customer("Robyn", 6)
   val yonis = Customer("Yonis", 8)
 
 
-  private def sumMenuItems(menuItems: List[MenuItem]): BigDecimal = menuItems.map(item => item.cost).sum
-
   def IncreaseLoyaltyPoints(customer: Customer, items: List[MenuItem]): String = { //TODO: You've worked out the loyalty points and returned a messages, testing this could prove difficult. Next time return the points and construct the message elsewhere
-    if (billWithLoyaltyDiscount(customer, items) >= 20 && customer.loyaltyStars < 8){
-      //customer.loyaltyStars += 1 //TODO: This type of mutability strays away from what scala offers, try to do this with immutability
+    if (billWithLoyaltyDiscount(customer, items) >= 20 && customer.loyaltyStars < 8) {
+      customer.loyaltyStars += 1 //TODO: This type of mutability strays away from what scala offers, try to do this with immutability
       s"Loyalty point added! Current total: ${customer.loyaltyStars}"
-    } else if (billWithLoyaltyDiscount(customer, items) >= 20 && customer.loyaltyStars >= 8){
-      "Maximum loyalty points reached! Congratulations you receive a 20% discount on all non-premium orders. "}
+    } else if (billWithLoyaltyDiscount(customer, items) >= 20 && customer.loyaltyStars >= 8) {
+      "Maximum loyalty points reached! Congratulations you receive a 20% discount on all non-premium orders. "
+    }
     else "Spend at least £20 next time to get a loyalty point"
   }
 
   def loyaltyDiscount(customer: Customer, items: List[MenuItem]): BigDecimal =
     customer.loyaltyStars match {
-    case (0) => 1 * sumMenuItems(items)
-    case (1) => 1 * sumMenuItems(items)
-    case (2) => 1 * sumMenuItems(items)
-    case (3) => .025 * sumMenuItems(items)
-    case (4) => .05 * sumMenuItems(items)
-    case (5) => .075 * sumMenuItems(items)
-    case (6) => .1 * sumMenuItems(items)
-    case (7) => .125 * sumMenuItems(items)
-    case (8) => .15 * sumMenuItems(items)
-  }
+      case (0) => 1 * sumFoodAndDrink(items)
+      case (1) => 1 * sumFoodAndDrink(items)
+      case (2) => 1 * sumFoodAndDrink(items)
+      case (3) =>.025 * sumFoodAndDrink(items)
+      case (4) =>.05 * sumFoodAndDrink(items)
+      case (5) =>.075 * sumFoodAndDrink(items)
+      case (6) =>.1 * sumFoodAndDrink(items)
+      case (7) =>.125 * sumFoodAndDrink(items)
+      case (8) =>.15 * sumFoodAndDrink(items)
+    }
+
+  private def sumMenuItems(menuItems: List[MenuItem]): BigDecimal = menuItems.map(item => item.cost).sum
+
+  def sumFoodAndDrink(items: List[MenuItem]): BigDecimal = happyHourHalfPriceDrinks(items) + getFoodItems(items).map(items => items.cost).sum
 
   def billWithLoyaltyDiscount(customer: Customer, items: List[MenuItem]) = {
-    if(premiumFood(items)){ //TODO: premiumFood isn't very descriptive, I know this is picky but "isPremiumFood" `sounds` nicer
-      sumMenuItems(items) }
+    if (checkIfOrderContainsPremiumFood(items)) { //TODO: premiumFood isn't very descriptive, I know this is picky but "isPremiumFood" `sounds` nicer
+      sumFoodAndDrink(items)
+    }
     else {
-      sumMenuItems(items) - loyaltyDiscount(customer, items)
+      sumFoodAndDrink(items) - loyaltyDiscount(customer, items)
     }
   }
 
-  def onlyDrinks(items: List[MenuItem]) = !items.exists(items => items.isFood)
-
-  def hotFood(items: List[MenuItem]): Boolean = items.exists(item => item.isHot && item.isFood)
-
-  def premiumFood(items: List[MenuItem]): Boolean = items.exists(item => item.isPremium)
-
-
-  def serviceChargeCalculator(items: List[MenuItem]):BigDecimal ={
-    if(onlyDrinks(items)){
+  def displayLoyaltyDiscount(customer: Customer, items: List[MenuItem]): BigDecimal = {
+    if (checkIfOrderContainsPremiumFood(items)) {
       0
-    } else if (!onlyDrinks(items) && !hotFood(items) && !premiumFood(items)){
+    } else loyaltyDiscount(customer, items)
+  }
+
+  def displayHappyHourDiscount(items: List[MenuItem]): BigDecimal = {
+    if(checkIfIsHappyHour()){
+      happyHourHalfPriceDrinks(items)
+    } else 0
+  }
+
+  def getDrinkItems(items: List[MenuItem]): List[MenuItem] = items.filter(items => !items.isFood)
+
+  def getFoodItems(items: List[MenuItem]): List[MenuItem] = items.filter(items => items.isFood)
+
+  def checkIfOrderIsOnlyDrinks(items: List[MenuItem]) = !items.exists(items => items.isFood)
+
+  def checkIfOrderContainsHotFood(items: List[MenuItem]): Boolean = items.exists(item => item.isHot && item.isFood)
+
+  def checkIfOrderContainsPremiumFood(items: List[MenuItem]): Boolean = items.exists(item => item.isPremium)
+
+  def checkIfOrderContainsDrinks(items: List[MenuItem]): Boolean = items.exists(items => !items.isFood)
+
+  def checkIfIsHappyHour(): Boolean = {
+    val time = LocalTime.now().getHour
+    (time > 10 && time < 21)}
+
+  def serviceChargeCalculator(items: List[MenuItem]): BigDecimal = {
+    if (checkIfOrderIsOnlyDrinks(items)) {
+      0
+    } else if (!checkIfOrderIsOnlyDrinks(items) && !checkIfOrderContainsHotFood(items) && !checkIfOrderContainsPremiumFood(items)) {
       sumMenuItems(items) * 0.1
-    } else if (hotFood(items) && !premiumFood(items)){
+    } else if (checkIfOrderContainsHotFood(items) && !checkIfOrderContainsPremiumFood(items)) {
       sumMenuItems(items) * 0.2
-    } else if (premiumFood(items)){
+    } else if (checkIfOrderContainsPremiumFood(items)) {
       sumMenuItems(items) * 0.25
     } else 0
   }
 
   def serviceChargeCap(items: List[MenuItem]): BigDecimal = {
-    if (serviceChargeCalculator(items) <= 20){
+    if (serviceChargeCalculator(items) <= 20) {
       serviceChargeCalculator(items)
-    } else if (serviceChargeCalculator(items) >= 20 && !items.exists(items => items.isPremium)){
+    } else if (serviceChargeCalculator(items) >= 20 && !items.exists(items => items.isPremium)) {
       20
-    }  else if (serviceChargeCalculator(items) > 40 && items.exists(items => items.isPremium)) {
-     40
+    } else if (serviceChargeCalculator(items) > 40 && items.exists(items => items.isPremium)) {
+      40
     } else serviceChargeCalculator(items)
+  }
+
+  def happyHourHalfPriceDrinks(items: List[MenuItem]): BigDecimal = {
+    val drinksCost = items.filter(items => !items.isFood).map(drinks => drinks.cost)
+    if (checkIfIsHappyHour()) {
+      (drinksCost.sum) / 2
+    } else drinksCost.sum
   }
 
   def billTotalWithServiceAndLoyalty(customer: Customer, items: List[MenuItem]): BigDecimal = {
     val billWithLoyalty = billWithLoyaltyDiscount(customer, items)
     val serviceCharge = serviceChargeCalculator(items)
-    val total = billWithLoyalty - serviceCharge
+    val total = billWithLoyalty + serviceCharge
     total
   }
 
-  def billReceipt(customer: Customer, items: List[MenuItem]): String ={
+  def billReceipt(customer: Customer, items: List[MenuItem]): String = {
     "Thank you for ordering at X Cafe! \n" +
-    "----------------------------------------------------- \n" +
-      IncreaseLoyaltyPoints(customer, items) + " \nYour Order: \n" + items.map(food => food.item)  + "\n" +
-    "-----------------------------------------------------" + "\n" + s"Total: ${billTotalWithServiceAndLoyalty(customer, items)}" +
+      "----------------------------------------------------- \n" +
+      IncreaseLoyaltyPoints(customer, items) + " \nYour Order: \n" + items.map(food => food.item) + "\n" +
+      "-----------------------------------------------------" + "\n" + s"Total: £${billTotalWithServiceAndLoyalty(customer, items)}" +
       "\n" +
-      s"Order before discount: ${sumMenuItems(items)}" +
+      s"Order before discount and service: £${sumMenuItems(items)}" +
       "\n" +
-      s"Loyalty Discount: ${loyaltyDiscount(customer, items)}" +
+      s"Loyalty Discount: - £${displayLoyaltyDiscount(customer, items)}" +
       "\n" +
-      s"Service Charge: ${serviceChargeCap(items)}"
+      s"Happy Hour Drinks Discount: - £${displayHappyHourDiscount(items)}" +
+      "\n" +
+      s"Service Charge: + £${serviceChargeCap(items)}"
   }
 
 
 
-  println(billReceipt(jake, List(steakFrites, onionSoup, Ratatouille, Ratatouille, Ratatouille)))
+
+
+
+
+
+
+
+  println(checkIfIsHappyHour())
+
+  println(billReceipt(cristian, List(steakFrites, lobster, cola, cheeseSandwich, whiteWine)))
   println("-----------------------------------------------------")
+
+  println(billReceipt(jake, List(steakFrites, cola, cheeseSandwich, Ratatouille)))
+  println("-----------------------------------------------------")
+ println(happyHourHalfPriceDrinks(List(steakFrites, cola, cheeseSandwich, Ratatouille)))
+  println("-----------------------------------------------------")
+
+
+//  println("loyalty discount:")
+//  println(loyaltyDiscount(jake,List(steakFrites, cola, cheeseSandwich, Ratatouille) ))
+//
+//  println("sum of food and drink:")
+//  println(sumFoodAndDrink(List(steakFrites, cola, cheeseSandwich, Ratatouille)))
+//  println("happy hour drinks discount:")
+//  println(happyHourHalfPriceDrinks(List(steakFrites, cola, cheeseSandwich, Ratatouille)))
+//  println("sum of menu items:")
+//  println(sumMenuItems(List(steakFrites, cola, cheeseSandwich, Ratatouille)))
+//
+//  println("-----------------------------------------------------")
+//  println("bill with loyalty discount:")
+//  println(billWithLoyaltyDiscount(jake,List(steakFrites, cola, cheeseSandwich, Ratatouille)))
 
 }
