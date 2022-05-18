@@ -1,7 +1,7 @@
-import CafeX.IncreaseLoyaltyPoints
+
 import Currency.{EUR, GBP, JPY, USD}
 
-import java.time.LocalTime
+import java.time.{LocalDate, LocalTime}
 
 object CafeX extends App {
   //THEME: FRENCH CAFE
@@ -50,15 +50,15 @@ object CafeX extends App {
     }
   }
 
-  def IncreaseLoyaltyPoints(customer: Customer, items: List[MenuItem]): String = { //TODO: You've worked out the loyalty points and returned a messages, testing this could prove difficult. Next time return the points and construct the message elsewhere
-    if (billWithLoyaltyDiscount(customer, items) >= 20 && customer.loyaltyStars < 8) {
-      customer.loyaltyStars += 1 //TODO: This type of mutability strays away from what scala offers, try to do this with immutability
-      s"Loyalty point added! Current total: ${customer.loyaltyStars}"
-    } else if (billWithLoyaltyDiscount(customer, items) >= 20 && customer.loyaltyStars >= 8) {
-      "Maximum loyalty points reached! Congratulations you receive a 20% discount on all non-premium orders. "
-    }
-    else "Spend at least £20 next time to get a loyalty point"
-  }
+//  def IncreaseLoyaltyPoints(customer: Customer, items: List[MenuItem]): String = { //TODO: You've worked out the loyalty points and returned a messages, testing this could prove difficult. Next time return the points and construct the message elsewhere
+//    if (billWithLoyaltyDiscount(customer, items) >= 20 && customer.loyaltyStars < 8) {
+//      customer.loyaltyStars += 1 //TODO: This type of mutability strays away from what scala offers, try to do this with immutability
+//      s"Loyalty point added! Current total: ${customer.loyaltyStars}"
+//    } else if (billWithLoyaltyDiscount(customer, items) >= 20 && customer.loyaltyStars >= 8) {
+//      "Maximum loyalty points reached! Congratulations you receive a 20% discount on all non-premium orders. "
+//    }
+//    else "Spend at least £20 next time to get a loyalty point"
+//  }
 
   def loyaltyDiscount(customer: Customer, items: List[MenuItem]): BigDecimal =
     customer.loyaltyStars match {
@@ -153,9 +153,12 @@ object CafeX extends App {
   def billReceipt(customer: Customer, items: List[MenuItem], currency: Currency): String = {
     val symbol = setCurrencySymbol(currency)
     "Thank you for ordering at X Cafe! \n" +
+      s"Date of transaction:  ${LocalDate.now()}" + "\n" +
+      s"Time of transaction:  ${LocalTime.now().getHour}:${LocalTime.now().getMinute}" + "\n" +
       "----------------------------------------------------- \n" +
-      IncreaseLoyaltyPoints(customer, items) + " \nYour Order: \n" + items.map(food => food.item) + "\n" +
-      "-----------------------------------------------------" + "\n" + s"Total: $symbol${billTotalWithServiceAndLoyalty(customer, items) * CurrencyExchangeRate(currency)}" +
+//      IncreaseLoyaltyPoints(customer, items) +
+      "Your Order: \n" + items.map(food => (food.item)) + "\n" +
+      "-----------------------------------------------------" +
       "\n" +
       s"Order before discount and service: $symbol${sumMenuItems(items) * CurrencyExchangeRate(currency)}" +
       "\n" +
@@ -163,7 +166,9 @@ object CafeX extends App {
       "\n" +
       s"Happy Hour Drinks Discount: - $symbol${displayHappyHourDiscount(items) * CurrencyExchangeRate(currency)}" +
       "\n" +
-      s"Service Charge: + $symbol${serviceChargeCap(items) * CurrencyExchangeRate(currency)}"
+      s"Service Charge: + $symbol${serviceChargeCap(items) * CurrencyExchangeRate(currency)}" +
+      "\n" +
+      "\n" + s"Total: $symbol${billTotalWithServiceAndLoyalty(customer, items) * CurrencyExchangeRate(currency)}"
   }
 
 
@@ -177,15 +182,15 @@ object CafeX extends App {
 
 
 val order = List(steakFrites, lobster, cola, cheeseSandwich, whiteWine)
-
-  println(billReceipt(cristian, order, USD))
-  println("-----------------------------------------------------")
+//
+//  println(billReceipt(cristian, order, USD))
+//  println("-----------------------------------------------------")
 
   println(billReceipt(cristian, order, GBP))
   println("-----------------------------------------------------")
 
-  println(billReceipt(cristian, order, JPY))
-  println("-----------------------------------------------------")
+//  println(billReceipt(cristian, order, JPY))
+//  println("-----------------------------------------------------")
 
 //  println(billReceipt(jake, List(steakFrites, cola, cheeseSandwich, Ratatouille)))
 //  println("-----------------------------------------------------")
