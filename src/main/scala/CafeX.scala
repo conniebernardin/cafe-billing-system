@@ -1,4 +1,5 @@
 import CafeX.IncreaseLoyaltyPoints
+import Currency.{EUR, GBP, JPY, USD}
 
 import java.time.LocalTime
 
@@ -29,6 +30,25 @@ object CafeX extends App {
   val robyn = Customer("Robyn", 6)
   val yonis = Customer("Yonis", 8)
 
+
+  def CurrencyExchangeRate(currency: Currency): BigDecimal = {
+    currency match {
+      case GBP => 1
+      case EUR => 1.18
+      case USD => 1.24
+      case JPY => 159.8
+      case _ => 1
+    }
+  }
+
+  def setCurrencySymbol(currency: Currency) = {
+    currency match {
+      case GBP => "£"
+      case EUR => "€"
+      case USD => "$"
+      case _ => "£"
+    }
+  }
 
   def IncreaseLoyaltyPoints(customer: Customer, items: List[MenuItem]): String = { //TODO: You've worked out the loyalty points and returned a messages, testing this could prove difficult. Next time return the points and construct the message elsewhere
     if (billWithLoyaltyDiscount(customer, items) >= 20 && customer.loyaltyStars < 8) {
@@ -130,19 +150,20 @@ object CafeX extends App {
     total
   }
 
-  def billReceipt(customer: Customer, items: List[MenuItem]): String = {
+  def billReceipt(customer: Customer, items: List[MenuItem], currency: Currency): String = {
+    val symbol = setCurrencySymbol(currency)
     "Thank you for ordering at X Cafe! \n" +
       "----------------------------------------------------- \n" +
       IncreaseLoyaltyPoints(customer, items) + " \nYour Order: \n" + items.map(food => food.item) + "\n" +
-      "-----------------------------------------------------" + "\n" + s"Total: £${billTotalWithServiceAndLoyalty(customer, items)}" +
+      "-----------------------------------------------------" + "\n" + s"Total: $symbol${billTotalWithServiceAndLoyalty(customer, items) * CurrencyExchangeRate(currency)}" +
       "\n" +
-      s"Order before discount and service: £${sumMenuItems(items)}" +
+      s"Order before discount and service: $symbol${sumMenuItems(items) * CurrencyExchangeRate(currency)}" +
       "\n" +
-      s"Loyalty Discount: - £${displayLoyaltyDiscount(customer, items)}" +
+      s"Loyalty Discount: - $symbol${displayLoyaltyDiscount(customer, items) * CurrencyExchangeRate(currency)}" +
       "\n" +
-      s"Happy Hour Drinks Discount: - £${displayHappyHourDiscount(items)}" +
+      s"Happy Hour Drinks Discount: - $symbol${displayHappyHourDiscount(items) * CurrencyExchangeRate(currency)}" +
       "\n" +
-      s"Service Charge: + £${serviceChargeCap(items)}"
+      s"Service Charge: + $symbol${serviceChargeCap(items) * CurrencyExchangeRate(currency)}"
   }
 
 
@@ -154,15 +175,22 @@ object CafeX extends App {
 
 
 
-  println(checkIfIsHappyHour())
 
-  println(billReceipt(cristian, List(steakFrites, lobster, cola, cheeseSandwich, whiteWine)))
+val order = List(steakFrites, lobster, cola, cheeseSandwich, whiteWine)
+
+  println(billReceipt(cristian, order, USD))
   println("-----------------------------------------------------")
 
-  println(billReceipt(jake, List(steakFrites, cola, cheeseSandwich, Ratatouille)))
+  println(billReceipt(cristian, order, GBP))
   println("-----------------------------------------------------")
- println(happyHourHalfPriceDrinks(List(steakFrites, cola, cheeseSandwich, Ratatouille)))
+
+  println(billReceipt(cristian, order, JPY))
   println("-----------------------------------------------------")
+
+//  println(billReceipt(jake, List(steakFrites, cola, cheeseSandwich, Ratatouille)))
+//  println("-----------------------------------------------------")
+// println(happyHourHalfPriceDrinks(List(steakFrites, cola, cheeseSandwich, Ratatouille)))
+//  println("-----------------------------------------------------")
 
 
 //  println("loyalty discount:")
