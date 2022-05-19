@@ -15,7 +15,7 @@ object CafeX extends App {
   val cheeseSandwich = MenuItem("Cheese Sandwich", 2.00, isHot = false, isFood = true, isPremium = false)
   val steakFrites = MenuItem("Steak frites", 4.50, isHot = true, isFood = true, isPremium = false)
   val onionSoup = MenuItem("Onion Soup", 7.50, isHot = true, isFood = true, isPremium = false)
-  val Ratatouille = MenuItem("Ratatouille", 14.00, isHot = true, isFood = true, isPremium = false)
+  val ratatouille = MenuItem("Ratatouille", 14.00, isHot = true, isFood = true, isPremium = false)
   val Quiche = MenuItem("Quiche Lorraine", 9.00, isHot = false, isFood = true, isPremium = false)
 
   val coqAuVin = MenuItem("Coq au vin", 18.50, isHot = true, isFood = true, isPremium = true)
