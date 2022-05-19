@@ -31,7 +31,7 @@ object CafeX extends App {
   val yonis = Customer("Yonis", 8)
 
 
-  def CurrencyExchangeRate(currency: Currency): BigDecimal = {
+  def currencyExchangeRate(currency: Currency): BigDecimal = {
     currency match {
       case GBP => 1
       case EUR => 1.18
@@ -160,15 +160,15 @@ object CafeX extends App {
       "Your Order: \n" + items.map(food => (food.item)) + "\n" +
       "-----------------------------------------------------" +
       "\n" +
-      s"Order before discount and service: $symbol${sumMenuItems(items) * CurrencyExchangeRate(currency)}" +
+      s"Order before discount and service: $symbol${sumMenuItems(items) * currencyExchangeRate(currency)}" +
       "\n" +
-      s"Loyalty Discount: - $symbol${displayLoyaltyDiscount(customer, items) * CurrencyExchangeRate(currency)}" +
+      s"Loyalty Discount: - $symbol${displayLoyaltyDiscount(customer, items) * currencyExchangeRate(currency)}" +
       "\n" +
-      s"Happy Hour Drinks Discount: - $symbol${displayHappyHourDiscount(items) * CurrencyExchangeRate(currency)}" +
+      s"Happy Hour Drinks Discount: - $symbol${displayHappyHourDiscount(items) * currencyExchangeRate(currency)}" +
       "\n" +
-      s"Service Charge: + $symbol${serviceChargeCap(items) * CurrencyExchangeRate(currency)}" +
+      s"Service Charge: + $symbol${serviceChargeCap(items) * currencyExchangeRate(currency)}" +
       "\n" +
-      "\n" + s"Total: $symbol${billTotalWithServiceAndLoyalty(customer, items) * CurrencyExchangeRate(currency)}"
+      "\n" + s"Total: $symbol${billTotalWithServiceAndLoyalty(customer, items) * currencyExchangeRate(currency)}"
   }
 
 

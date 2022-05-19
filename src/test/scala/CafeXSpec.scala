@@ -1,3 +1,4 @@
+import Currency.{EUR, GBP}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
@@ -14,6 +15,7 @@ class CafeXSpec extends AnyWordSpec with Matchers {
 
   val lobster = MenuItem("Lobster", 25.00, isHot = true, isFood = true, isPremium = true)
 
+  case object CAD extends Currency
 
   "checkIfOrderIsOnlyDrinks" should {
     "return false if order contains food" in {
@@ -33,4 +35,31 @@ class CafeXSpec extends AnyWordSpec with Matchers {
     }
   }
 
+  "currencyExchangeRate" should {
+    "return 1.18 rate when Euro input" in {
+      assert(CafeX.currencyExchangeRate(EUR).equals(1.18))
+    }
+  }
+
+  "currencyExchangeRate" should {
+    "return x1 rate when unknown input" in {
+      assert(CafeX.currencyExchangeRate(CAD).equals(1))
+    }
+  }
+
+  "setCurrencySymbol" should {
+    "return pound sign as string when GBP input as currency" in {
+      assert(CafeX.setCurrencySymbol(GBP).equals("£"))
+    }
+  }
+
+  "setCurrencySymbol" should {
+    "return default pound sign as string when unknown input as currency" in {
+      assert(CafeX.setCurrencySymbol(CAD).equals("£"))
+    }
+  }
+
 }
+
+
+
