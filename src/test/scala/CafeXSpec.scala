@@ -12,6 +12,7 @@ class CafeXSpec extends AnyWordSpec with Matchers {
   val cheeseSandwich = MenuItem("Cheese Sandwich", 2.00, isHot = false, isFood = true, isPremium = false)
   val steakFrites = MenuItem("Steak frites", 4.50, isHot = true, isFood = true, isPremium = false)
   val ratatouille = MenuItem("Ratatouille", 14.00, isHot = true, isFood = true, isPremium = false)
+  val expensiveItem = MenuItem("item", 140.00, isHot = true, isFood = true, isPremium = false)
 
   val lobster = MenuItem("Lobster", 25.00, isHot = true, isFood = true, isPremium = true)
 
@@ -87,8 +88,47 @@ class CafeXSpec extends AnyWordSpec with Matchers {
   }
 
   "billWithLoyaltyDiscount" should {
-
+    "return total with loyalty discount applied if order doesn't contain premium items" in {
+      assert(CafeX.billWithLoyaltyDiscount(jake, List(ratatouille, ratatouille)).equals(23.8))
+    }
   }
+
+  "serviceChargeCap" should {
+    "return 0 if the order is only drinks" in {
+      assert(CafeX.serviceChargeCap(List(coffee, coffee)).equals(0))
+    }
+  }
+
+  "serviceChargeCap" should {
+    "return 20 if the order service charge is over 20 and there's no premium items" in {
+      assert(CafeX.serviceChargeCap(List(expensiveItem)).equals(20))
+    }
+  }
+
+  "serviceChargeCap" should {
+    "return 40 if the order service charge is over 20 and contains premium item" in {
+      assert(CafeX.serviceChargeCap(List(expensiveItem, lobster)).equals(40))
+    }
+  }
+
+  "serviceChargeCalculator" should {
+    "return 10% of total order sum if it contains cold, non-premium food " in {
+      assert(CafeX.serviceChargeCalculator(List(cheeseSandwich, cheeseSandwich)).equals(.40))
+    }
+  }
+
+  "serviceChargeCalculator" should {
+    "return 20% of total order sum if it contains hot, non-premium food " in {
+      assert(CafeX.serviceChargeCalculator(List(steakFrites)).equals(.90))
+    }
+  }
+
+  "serviceChargeCalculator" should {
+    "return 40% of total order sum if it contains premium food " in {
+      assert(CafeX.serviceChargeCalculator(List(lobster, lobster)).equals(12.5))
+    }
+  }
+
 }
 
 
