@@ -71,9 +71,10 @@ object CafeX extends App {
       case (6) =>.1 * sumFoodAndDrink(items)
       case (7) =>.125 * sumFoodAndDrink(items)
       case (8) =>.15 * sumFoodAndDrink(items)
+      case (_) =>.15 * sumFoodAndDrink(items)
     }
 
-  private def sumMenuItems(menuItems: List[MenuItem]): BigDecimal = menuItems.map(item => item.cost).sum
+   def sumMenuItems(menuItems: List[MenuItem]): BigDecimal = menuItems.map(item => item.cost).sum
 
   def sumFoodAndDrink(items: List[MenuItem]): BigDecimal = happyHourHalfPriceDrinks(items) + getFoodItems(items).map(items => items.cost).sum
 

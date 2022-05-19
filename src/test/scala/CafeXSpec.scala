@@ -15,6 +15,9 @@ class CafeXSpec extends AnyWordSpec with Matchers {
 
   val lobster = MenuItem("Lobster", 25.00, isHot = true, isFood = true, isPremium = true)
 
+  val sarina = Customer("Sarina", 2)
+  val jake = Customer("Jake", 8)
+
   case object CAD extends Currency
 
   "checkIfOrderIsOnlyDrinks" should {
@@ -56,6 +59,30 @@ class CafeXSpec extends AnyWordSpec with Matchers {
   "setCurrencySymbol" should {
     "return default pound sign as string when unknown input as currency" in {
       assert(CafeX.setCurrencySymbol(CAD).equals("£"))
+    }
+  }
+
+  "loyaltyDiscount" should {
+    "return sum of food and drink when customer has less than 3 points" in{
+      assert(CafeX.loyaltyDiscount(sarina, List(ratatouille, ratatouille)).equals(28))
+    }
+  }
+
+  "loyaltyDiscount" should {
+    "return 15% of sum of food and drink when customer has 8 points" in{
+      assert(CafeX.loyaltyDiscount(jake, List(ratatouille, ratatouille)).equals(4.2))
+    }
+  }
+
+  "loyaltyDiscount" should {
+    "return sum of food and drink if customer has over 8 points" in{
+      assert(CafeX.loyaltyDiscount(Customer("customer", 9), List(ratatouille, ratatouille)).equals(28))
+    }
+  }
+
+  "sumMenuItems" should {
+    "return the sum of all menu items" in {
+      assert(CafeX.sumMenuItems(List(ratatouille, ratatouille, coffee)).equals(29))
     }
   }
 
