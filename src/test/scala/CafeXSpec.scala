@@ -86,6 +86,9 @@ class CafeXSpec extends AnyWordSpec with Matchers {
     }
   }
 
+  "billWithLoyaltyDiscount" should {
+
+  }
 }
 
 
